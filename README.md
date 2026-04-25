@@ -10,12 +10,6 @@ Le dashboard est consultable directement dans le navigateur, sans téléchargeme
 https://sedrash.github.io/linux-security-audit-and-monitoring/
 ```
 
-## Dépôt GitHub
-
-```text
-https://github.com/sedrash/linux-security-audit-and-monitoring
-```
-
 ## Objectif
 
 Ce projet présente une démarche complète de sécurisation d'une VM Linux :
