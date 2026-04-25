@@ -4,6 +4,14 @@ Dashboard React/Vite réalisé pour présenter un projet d'audit, de durcissemen
 
 Ce dépôt peut être partagé avec l'enseignant afin de montrer la démarche suivie, les outils utilisés, les actions de hardening appliquées et la synthèse avant / après.
 
+## Démo en ligne
+
+Une fois le projet publié avec GitHub Pages, le dashboard est accessible directement dans le navigateur :
+
+```text
+https://sedrash.github.io/linux-security-audit-and-monitoring/
+```
+
 ## Objectif du projet
 
 Le projet a pour objectif de réduire la surface d'attaque d'une VM Linux, d'améliorer sa configuration de sécurité et de mettre en place une supervision de base.
