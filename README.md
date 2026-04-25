@@ -1,56 +1,61 @@
 # Linux Security Audit and Monitoring Dashboard
 
-Dashboard React/Vite réalisé pour présenter un projet d'audit, de durcissement et de surveillance continue d'un serveur Linux hébergé dans une machine virtuelle.
-
-Ce dépôt peut être partagé avec l'enseignant afin de montrer la démarche suivie, les outils utilisés, les actions de hardening appliquées et la synthèse avant / après.
+Dashboard web réalisé avec React et Vite pour présenter un projet d'audit, de durcissement et de surveillance continue d'une machine virtuelle Linux.
 
 ## Démo en ligne
 
-Une fois le projet publié avec GitHub Pages, le dashboard est accessible directement dans le navigateur :
+Le dashboard est consultable directement dans le navigateur, sans téléchargement :
 
 ```text
 https://sedrash.github.io/linux-security-audit-and-monitoring/
 ```
 
-## Objectif du projet
+## Dépôt GitHub
 
-Le projet a pour objectif de réduire la surface d'attaque d'une VM Linux, d'améliorer sa configuration de sécurité et de mettre en place une supervision de base.
+```text
+https://github.com/sedrash/linux-security-audit-and-monitoring
+```
 
-La démarche est structurée en quatre phases :
+## Objectif
 
-1. audit initial du serveur Linux
-2. analyse avec des outils de sécurité
-3. durcissement du système
-4. surveillance continue après correction
+Ce projet présente une démarche complète de sécurisation d'une VM Linux :
 
-## Ce que montre le dashboard
+1. réaliser un audit initial du système
+2. identifier les services exposés et les faiblesses principales
+3. appliquer des actions de durcissement
+4. mettre en place une surveillance continue
+5. comparer l'état avant et après correction
 
-- score d'audit Lynis avant et après correction
+Le dashboard sert de support de démonstration pour visualiser les résultats de manière claire pendant une soutenance ou une évaluation.
+
+## Contenu du dashboard
+
+- score Lynis avant / après
 - outils utilisés pendant l'audit
 - ports ouverts détectés
-- vulnérabilités ou faiblesses principales
+- vulnérabilités principales
 - actions de durcissement appliquées
-- comparaison avant / après
 - preuves techniques et constats
-- supervision live via Socket.IO
-- synthèse finale pour la démonstration
+- supervision live pendant la démonstration VM
+- timeline des étapes de sécurisation
+- tableau de comparaison avant / après
 
 ## Outils utilisés
 
 ### Audit et analyse
 
 - `Lynis` : audit de sécurité et score de hardening
-- `Nmap` : cartographie des ports et services exposés
+- `Nmap` : détection des ports et services exposés
 - `Nikto` : analyse du service web
 - `Chkrootkit` : recherche d'indices de rootkits
 - `Rkhunter` : vérification complémentaire d'intégrité
-- `ClamAV` : détection antivirus
+- `ClamAV` : analyse antivirus
 - `YARA` : détection par règles
 
-### Durcissement
+### Durcissement du système
 
-- activation et configuration de `UFW`
-- durcissement de `SSH`
+- activation du pare-feu `UFW`
+- durcissement de la configuration `SSH`
 - installation et configuration de `Fail2Ban`
 - renforcement de la politique de mots de passe
 - désactivation des services inutiles
@@ -61,16 +66,24 @@ La démarche est structurée en quatre phases :
 ### Surveillance continue
 
 - `Auditd` pour la traçabilité système
-- `Fail2Ban` pour la protection active
-- `rsyslog` pour les journaux système
-- `Wazuh` si la supervision centralisée est utilisée
+- `Fail2Ban` pour bloquer les tentatives répétées
+- `rsyslog` pour la gestion des journaux
+- `Wazuh` pour la supervision centralisée si disponible
+
+## Note sur la démo en ligne
+
+La version publiée sur GitHub Pages affiche une synthèse des résultats et des données anonymisées.
+
+La partie live dépend de la VM de démonstration utilisée pendant le projet. Elle n'est donc pas connectée depuis GitHub Pages, car l'adresse de la VM appartient à un réseau local de laboratoire.
 
 ## Stack technique
 
 - `React`
 - `Vite`
-- `socket.io-client`
+- `Socket.IO Client`
 - `lucide-react`
+- `GitHub Pages`
+- `GitHub Actions`
 
 ## Lancer le projet en local
 
@@ -86,7 +99,7 @@ Lancer le serveur de développement :
 npm run dev
 ```
 
-Ouvrir ensuite l'adresse affichée par Vite, généralement :
+Ouvrir ensuite l'adresse affichée par Vite :
 
 ```text
 http://localhost:5173
@@ -101,54 +114,23 @@ npm run preview
 
 ## Structure du projet
 
-- `src/App.jsx` : données, sections et logique principale du dashboard
-- `src/App.css` : mise en page et design
+- `src/App.jsx` : contenu du dashboard, données affichées et logique live
+- `src/App.css` : design et mise en page
 - `src/main.jsx` : point d'entrée React
-- `package.json` : scripts et dépendances
+- `public/` : icônes et fichiers publics
+- `.github/workflows/deploy.yml` : déploiement automatique GitHub Pages
+- `vite.config.js` : configuration Vite et chemin GitHub Pages
 
-## Données affichées
+## Confidentialité
 
-Les données du dashboard sont définies dans `src/App.jsx`.
+Le dépôt ne contient pas de secrets ni de données sensibles.
 
-Elles peuvent être adaptées selon les résultats réels obtenus sur la VM :
-
-- score Lynis avant / après
-- ports détectés par Nmap
-- résultats Nikto
-- outils de sécurité utilisés
-- actions de durcissement appliquées
-- événements remontés par la supervision live
-
-## Note de confidentialité
-
-Le dépôt ne doit pas contenir d'informations sensibles.
-
-À ne pas publier :
+À ne pas publier dans le dépôt :
 
 - mots de passe
 - clés SSH privées
-- tokens ou secrets
-- logs complets contenant des données personnelles
+- tokens
+- logs complets avec données personnelles
 - informations sensibles sur une machine réelle
 
-Les résultats affichés dans le dashboard doivent être nettoyés ou anonymisés avant publication.
-
-## Dépôt GitHub
-
-Lien du dépôt :
-
-```text
-https://github.com/sedrash/linux-security-audit-and-monitoring
-```
-
-Commandes utiles pour publier une mise à jour :
-
-```bash
-git add .
-git commit -m "update dashboard documentation"
-git push
-```
-
-## Résumé
-
-Ce dashboard présente une vue claire et synthétique d'un projet de cybersécurité Linux : audit initial, analyse technique, durcissement, supervision et comparaison finale. Il est conçu pour servir de support de démonstration pendant une soutenance ou une évaluation.
+Les informations affichées dans le dashboard doivent rester anonymisées ou adaptées à un environnement de test.

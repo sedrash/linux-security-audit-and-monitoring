@@ -333,6 +333,12 @@ export default function App() {
   const [data, setData] = useState(initialData);
 
   useEffect(() => {
+    const liveHosts = ["localhost", "127.0.0.1", "192.168.56.101"];
+
+    if (!liveHosts.includes(window.location.hostname)) {
+      return undefined;
+    }
+
     const socket = io("http://192.168.56.101:3001", {
       autoConnect: true,
       transports: ["websocket", "polling"],
@@ -787,8 +793,9 @@ export default function App() {
       <section className="footer-note">
         <TerminalSquare size={18} />
         <p>
-          Dashboard prêt pour démonstration, capture d’écran, dépôt GitHub et
-          soutenance de projet d’audit sécurité.
+          Dashboard prêt pour démonstration, dépôt GitHub et soutenance. La
+          version en ligne affiche les résultats anonymisés ; la supervision
+          live est active dans l’environnement VM de démonstration.
         </p>
       </section>
     </div>
