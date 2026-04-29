@@ -1,0 +1,9 @@
+.git
+.github
+node_modules
+dist
+dist-ssr
+.vagrant
+*.log
+backend/node_modules
+vagrant

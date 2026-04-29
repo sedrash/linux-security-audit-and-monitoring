@@ -1,130 +1,158 @@
 # Linux Security Audit and Monitoring Dashboard
 
-Dashboard web réalisé avec React et Vite pour présenter un projet d'audit, de durcissement et de surveillance continue d'une machine virtuelle Linux.
+Reproducible lab for auditing and monitoring an intentionally vulnerable Linux VM.
 
-## Démo en ligne
+The project has three parts:
 
-Le dashboard est consultable directement dans le navigateur, sans téléchargement :
+- a Vagrant Ubuntu VM with SSH, Apache, weak lab configs, logs, and audit tools
+- a Node.js backend that connects to the VM over SSH, runs real scans, parses results, and emits Socket.IO updates
+- a React/Vite frontend that calls the API and shows live audit progress
 
-```text
-https://sedrash.github.io/linux-security-audit-and-monitoring/
-```
+## Security Warning
 
-## Objectif
+This repository provisions a deliberately weak Linux machine for local training. Use it only in an isolated lab network. Do not expose the Vagrant VM to the internet or reuse the sample credentials on any real system.
 
-Ce projet présente une démarche complète de sécurisation d'une VM Linux :
+## Requirements
 
-1. réaliser un audit initial du système
-2. identifier les services exposés et les faiblesses principales
-3. appliquer des actions de durcissement
-4. mettre en place une surveillance continue
-5. comparer l'état avant et après correction
+- Vagrant
+- VirtualBox
+- Docker and Docker Compose
+- Node.js, only if you want to run the frontend outside Docker
 
-Le dashboard sert de support de démonstration pour visualiser les résultats de manière claire pendant une soutenance ou une évaluation.
+## Quick Start
 
-## Contenu du dashboard
-
-- score Lynis avant / après
-- outils utilisés pendant l'audit
-- ports ouverts détectés
-- vulnérabilités principales
-- actions de durcissement appliquées
-- preuves techniques et constats
-- supervision live pendant la démonstration VM
-- timeline des étapes de sécurisation
-- tableau de comparaison avant / après
-
-## Outils utilisés
-
-### Audit et analyse
-
-- `Lynis` : audit de sécurité et score de hardening
-- `Nmap` : détection des ports et services exposés
-- `Nikto` : analyse du service web
-- `Chkrootkit` : recherche d'indices de rootkits
-- `Rkhunter` : vérification complémentaire d'intégrité
-- `ClamAV` : analyse antivirus
-- `YARA` : détection par règles
-
-### Durcissement du système
-
-- activation du pare-feu `UFW`
-- durcissement de la configuration `SSH`
-- installation et configuration de `Fail2Ban`
-- renforcement de la politique de mots de passe
-- désactivation des services inutiles
-- durcissement des paramètres `sysctl`
-- activation d'`AppArmor`
-- réduction des permissions excessives
-
-### Surveillance continue
-
-- `Auditd` pour la traçabilité système
-- `Fail2Ban` pour bloquer les tentatives répétées
-- `rsyslog` pour la gestion des journaux
-- `Wazuh` pour la supervision centralisée si disponible
-
-## Note sur la démo en ligne
-
-La version publiée sur GitHub Pages affiche une synthèse des résultats et des données anonymisées.
-
-La partie live dépend de la VM de démonstration utilisée pendant le projet. Elle n'est donc pas connectée depuis GitHub Pages, car l'adresse de la VM appartient à un réseau local de laboratoire.
-
-## Stack technique
-
-- `React`
-- `Vite`
-- `Socket.IO Client`
-- `lucide-react`
-- `GitHub Pages`
-- `GitHub Actions`
-
-## Lancer le projet en local
-
-Installer les dépendances :
+Start the vulnerable VM:
 
 ```bash
-npm install
+vagrant up
 ```
 
-Lancer le serveur de développement :
+Start the frontend and backend containers:
 
 ```bash
-npm run dev
+docker compose up --build
 ```
 
-Ouvrir ensuite l'adresse affichée par Vite :
+Open the dashboard:
 
 ```text
 http://localhost:5173
 ```
 
-## Build production
+Backend API:
 
-```bash
-npm run build
-npm run preview
+```text
+http://localhost:3001/api/audit
+http://localhost:3001/api/audit/run
 ```
 
-## Structure du projet
+Forwarded lab services:
 
-- `src/App.jsx` : contenu du dashboard, données affichées et logique live
-- `src/App.css` : design et mise en page
-- `src/main.jsx` : point d'entrée React
-- `public/` : icônes et fichiers publics
-- `.github/workflows/deploy.yml` : déploiement automatique GitHub Pages
-- `vite.config.js` : configuration Vite et chemin GitHub Pages
+```text
+SSH from host: ssh vagrant@127.0.0.1 -p 2222
+Web from host: http://localhost:8081
+VM private IP: 192.168.56.101
+```
 
-## Confidentialité
+## Environment
 
-Le dépôt ne contient pas de secrets ni de données sensibles.
+The repository includes `.env` with lab defaults:
 
-À ne pas publier dans le dépôt :
+```dotenv
+VM_HOST=192.168.56.101
+VM_SSH_PORT=22
+VM_SSH_USER=vagrant
+VM_SSH_PASSWORD=vagrant
+VM_WEB_URL=http://192.168.56.101
+BACKEND_PORT=3001
+VITE_BACKEND_URL=http://localhost:3001
+```
 
-- mots de passe
-- clés SSH privées
-- tokens
-- logs complets avec données personnelles
-- informations sensibles sur une machine réelle
+Copy `.env.example` if you want to reset or customize the configuration.
 
-Les informations affichées dans le dashboard doivent rester anonymisées ou adaptées à un environnement de test.
+## Run an Audit
+
+Use the dashboard button, or call the API directly:
+
+```bash
+curl -X POST http://localhost:3001/api/audit/run
+```
+
+The backend connects to the VM over SSH and runs commands such as:
+
+- `lynis audit system --quick --no-colors`
+- `nmap -sV -Pn localhost`
+- `nikto -host http://localhost`
+- `ufw status verbose`
+- `fail2ban-client status sshd`
+- auth-log sampling for failed SSH attempts
+- YARA sample rule execution
+
+The frontend receives:
+
+- initial data from `GET /api/audit`
+- audit trigger status from `POST /api/audit/run`
+- live progress from Socket.IO events
+- final dashboard data from Socket.IO `dashboard-update`
+
+## Simulate SSH Failures
+
+On a Linux/macOS host with `sshpass` installed:
+
+```bash
+VM_HOST=192.168.56.101 VM_SSH_PORT=22 ATTEMPTS=8 ./scripts/simulate-ssh-failures.sh
+```
+
+From Windows, you can manually attempt bad SSH logins:
+
+```powershell
+ssh attacker@127.0.0.1 -p 2222
+```
+
+Then run a new audit and check the live SSH failure count and Fail2Ban status.
+
+## Local Frontend Development
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run Vite:
+
+```bash
+npm run dev
+```
+
+For the backend outside Docker:
+
+```bash
+cd backend
+npm install
+npm run dev
+```
+
+## Project Structure
+
+- `Vagrantfile` provisions the lab VM
+- `scripts/provision-vulnerable-vm.sh` installs tools and weak lab configs
+- `scripts/simulate-ssh-failures.sh` generates failed SSH auth events
+- `backend/src/auditEngine.js` runs scans over SSH and parses results
+- `backend/src/index.js` exposes REST and Socket.IO
+- `src/App.jsx` renders API-driven audit data
+- `docker-compose.yml` runs frontend and backend containers
+
+## Cleanup
+
+Stop the app:
+
+```bash
+docker compose down
+```
+
+Destroy the lab VM:
+
+```bash
+vagrant destroy -f
+```
