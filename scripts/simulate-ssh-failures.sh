@@ -2,6 +2,7 @@
 set -euo pipefail
 
 VM_HOST="${VM_HOST:-192.168.56.101}"
+<<<<<<< HEAD
 VM_SSH_PORT="${VM_SSH_PORT:-22}"
 ATTEMPTS="${ATTEMPTS:-8}"
 
@@ -21,3 +22,19 @@ for i in $(seq 1 "$ATTEMPTS"); do
 done
 
 echo "Generated ${ATTEMPTS} failed SSH attempts against ${VM_HOST}:${VM_SSH_PORT}."
+=======
+VM_PORT="${VM_PORT:-22}"
+ATTEMPTS="${ATTEMPTS:-5}"
+
+for i in $(seq 1 "$ATTEMPTS"); do
+  sshpass -p "wrong-password-$i" ssh \
+    -o StrictHostKeyChecking=no \
+    -o UserKnownHostsFile=/dev/null \
+    -o PreferredAuthentications=password \
+    -o PubkeyAuthentication=no \
+    -p "$VM_PORT" \
+    auditlab@"$VM_HOST" true || true
+done
+
+echo "Generated $ATTEMPTS failed SSH attempts against $VM_HOST:$VM_PORT"
+>>>>>>> 349b834 (new update)

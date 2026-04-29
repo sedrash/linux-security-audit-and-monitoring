@@ -179,6 +179,55 @@ body {
   gap: 14px;
 }
 
+.audit-control {
+  display: grid;
+  gap: 10px;
+}
+
+.audit-button {
+  min-height: 54px;
+  border: 1px solid rgba(66, 217, 140, 0.26);
+  border-radius: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #05120d;
+  background: linear-gradient(180deg, #7af0ad, var(--green));
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    opacity 160ms ease;
+}
+
+.audit-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.audit-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.audit-button:disabled svg {
+  animation: spin 1s linear infinite;
+}
+
+.audit-control p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .hero-mini-card {
   display: flex;
   gap: 12px;

@@ -1,0 +1,11 @@
+<network>
+  <name>audit-lab-net</name>
+  <forward mode="nat"/>
+  <bridge name="virbr56" stp="on" delay="0"/>
+  <ip address="192.168.121.1" netmask="255.255.255.0">
+    <dhcp>
+      <range start="192.168.121.10" end="192.168.121.254"/>
+      <host mac="52:54:00:12:34:56" name="audit-lab" ip="192.168.121.101"/>
+    </dhcp>
+  </ip>
+</network>

@@ -11,7 +11,11 @@ node_modules
 dist
 dist-ssr
 *.local
+<<<<<<< HEAD
 .vagrant/
+=======
+.env
+>>>>>>> 349b834 (new update)
 
 # Editor directories and files
 .vscode/*

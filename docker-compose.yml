@@ -2,19 +2,35 @@ services:
   backend:
     build:
       context: ./backend
+<<<<<<< HEAD
     env_file:
       - .env
     ports:
       - "${BACKEND_PORT:-3001}:3001"
+=======
+    network_mode: host
+    env_file:
+      - .env
+    volumes:
+      - ./.vagrant/machines/default/libvirt/private_key:/vagrant-key:ro
+>>>>>>> 349b834 (new update)
 
   frontend:
     build:
       context: .
+<<<<<<< HEAD
       dockerfile: Dockerfile.frontend
       args:
         VITE_BACKEND_URL: ${VITE_BACKEND_URL:-http://localhost:3001}
         VITE_BASE_PATH: /
     ports:
       - "5173:80"
+=======
+      args:
+        VITE_BACKEND_URL: "${VITE_BACKEND_URL:-http://localhost:3001}"
+        VITE_BASE_PATH: "/"
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
+>>>>>>> 349b834 (new update)
     depends_on:
       - backend

@@ -9,6 +9,7 @@ import {
   Lock,
   Play,
   Radar,
+  RefreshCw,
   ScanSearch,
   Server,
   Shield,
@@ -18,6 +19,7 @@ import {
   Wrench,
 } from "lucide-react";
 
+<<<<<<< HEAD
 const API_BASE = import.meta.env.VITE_BACKEND_URL || "http://localhost:3001";
 
 const fallbackData = {
@@ -36,6 +38,297 @@ const fallbackData = {
     serverIp: "Configure par .env",
     sshPort: "22",
     attackStatus: "Pret",
+=======
+const BACKEND_URL =
+  import.meta.env.VITE_BACKEND_URL ||
+  `${window.location.protocol}//${window.location.hostname}:3001`;
+
+const canUseBackend = ["localhost", "127.0.0.1", "192.168.56.101"].includes(
+  window.location.hostname,
+);
+
+const iconByName = {
+  Lynis: Shield,
+  Nmap: Radar,
+  Nikto: Globe,
+  Chkrootkit: ScanSearch,
+  Rkhunter: FileSearch,
+  ClamAV: ShieldCheck,
+  YARA: ShieldAlert,
+  "Activation du pare-feu UFW": BrickWallShield,
+  "Durcissement de SSH": Lock,
+  "Installation de Fail2Ban": Ban,
+  "Renforcement des mots de passe": Shield,
+  "Désactivation des services inutiles": Activity,
+  "Durcissement des paramètres sysctl": ShieldCheck,
+  "Activation d’AppArmor": ShieldAlert,
+  "Réduction des permissions excessives": FileSearch,
+  Auditd: FileSearch,
+  Fail2Ban: Ban,
+  rsyslog: Activity,
+  Wazuh: Server,
+};
+
+const initialData = {
+  scoreBefore: 60,
+  scoreAfter: 70,
+  ufw: "Actif",
+  fail2ban: "Protection SSH active",
+  auditCoverage: "Complet",
+  compliance: "Durcissement validé",
+  ports: ["22/tcp", "25/tcp", "80/tcp", "2222/tcp"],
+  tools: [
+    {
+      name: "Lynis",
+      category: "Audit",
+      description: "Évaluation du hardening et scoring sécurité du serveur.",
+      impact: "Base de référence avant / après correction",
+      icon: Shield,
+    },
+    {
+      name: "Nmap",
+      category: "Reconnaissance",
+      description: "Cartographie des ports ouverts et des services exposés.",
+      impact: "Identification des faiblesses techniques du système",
+      icon: Radar,
+    },
+    {
+      name: "Nikto",
+      category: "Web",
+      description: "Analyse de sécurité du service web et des mauvaises configurations.",
+      impact: "Repérage des risques applicatifs et HTTP",
+      icon: Globe,
+    },
+    {
+      name: "Chkrootkit",
+      category: "Rootkits",
+      description: "Recherche de rootkits, backdoors et anomalies locales.",
+      impact: "Contrôle rapide de l’intégrité du système",
+      icon: ScanSearch,
+    },
+    {
+      name: "Rkhunter",
+      category: "Rootkits",
+      description: "Détection approfondie d’indices de rootkits et de fichiers suspects.",
+      impact: "Vérification complémentaire de l’intégrité système",
+      icon: FileSearch,
+    },
+    {
+      name: "ClamAV",
+      category: "Antimalware",
+      description: "Détection de malwares, scripts suspects et fichiers infectés.",
+      impact: "Contrôle antivirus complémentaire sur la VM",
+      icon: ShieldCheck,
+    },
+    {
+      name: "YARA",
+      category: "Détection",
+      description: "Recherche de patterns malveillants et règles de détection.",
+      impact: "Identification d’artefacts suspects sur le système",
+      icon: ShieldAlert,
+    },
+  ],
+  hardeningSteps: [
+    {
+      title: "État initial",
+      detail: "Audit de référence sur la VM avec repérage des services exposés.",
+      status: "Initial",
+    },
+    {
+      title: "Cartographie réseau",
+      detail: "Analyse des ports et services visibles avec Nmap.",
+      status: "Cartographié",
+    },
+    {
+      title: "Audit web",
+      detail: "Évaluation du serveur web avec Nikto pour détecter les mauvaises pratiques.",
+      status: "Inspecté",
+    },
+    {
+      title: "Contrôle d’intégrité",
+      detail: "Vérification avec Chkrootkit et Rkhunter pour repérer les traces de compromission.",
+      status: "Analysé",
+    },
+    {
+      title: "Détection locale",
+      detail: "Contrôle avec ClamAV et YARA pour rechercher malwares et artefacts suspects.",
+      status: "Renforcé",
+    },
+    {
+      title: "Validation finale",
+      detail: "Nouvel audit Lynis pour confirmer les améliorations après analyse.",
+      status: "Validé",
+    },
+  ],
+  hardeningActions: [
+    {
+      name: "Activation du pare-feu UFW",
+      category: "Filtrage",
+      description: "Activation du pare-feu hôte pour limiter les flux réseau autorisés.",
+      impact: "Réduction de l’exposition réseau",
+      icon: BrickWallShield,
+    },
+    {
+      name: "Durcissement de SSH",
+      category: "Accès",
+      description: "Renforcement de la configuration SSH pour mieux protéger l’accès distant.",
+      impact: "Diminution du risque d’accès non autorisé",
+      icon: Lock,
+    },
+    {
+      name: "Installation de Fail2Ban",
+      category: "Protection",
+      description: "Blocage automatique des IP après des tentatives répétées d’authentification.",
+      impact: "Protection contre le brute force",
+      icon: Ban,
+    },
+    {
+      name: "Renforcement des mots de passe",
+      category: "Authentification",
+      description: "Application d’exigences plus fortes sur la qualité des mots de passe.",
+      impact: "Comptes mieux protégés",
+      icon: Shield,
+    },
+    {
+      name: "Désactivation des services inutiles",
+      category: "Surface d’attaque",
+      description: "Suppression ou arrêt des services non nécessaires au fonctionnement.",
+      impact: "Réduction des points d’entrée potentiels",
+      icon: Activity,
+    },
+    {
+      name: "Durcissement des paramètres sysctl",
+      category: "Noyau",
+      description: "Renforcement des paramètres réseau et système au niveau noyau.",
+      impact: "Comportement système plus résistant",
+      icon: ShieldCheck,
+    },
+    {
+      name: "Activation d’AppArmor",
+      category: "Confinement",
+      description: "Mise en place de profils de confinement pour limiter les actions des applications.",
+      impact: "Impact réduit en cas de compromission",
+      icon: ShieldAlert,
+    },
+    {
+      name: "Réduction des permissions excessives",
+      category: "Permissions",
+      description: "Restriction des droits trop larges sur les fichiers et répertoires sensibles.",
+      impact: "Moins de privilèges inutiles",
+      icon: FileSearch,
+    },
+  ],
+  hardeningGoals: [
+    "Réduire la surface d’attaque du système.",
+    "Améliorer la résistance globale face aux tentatives d’intrusion.",
+    "Renforcer les mécanismes de contrôle, d’accès et de confinement.",
+  ],
+  services: [
+    {
+      name: "Nmap",
+      state: "Cartographié",
+      note: "Ports et services exposés identifiés depuis la VM.",
+    },
+    {
+      name: "Nikto",
+      state: "Inspecté",
+      note: "Service web vérifié pour détecter les mauvaises configurations.",
+    },
+    {
+      name: "Chkrootkit",
+      state: "Analysé",
+      note: "Recherche locale d’indices de rootkits et backdoors.",
+    },
+    {
+      name: "Rkhunter",
+      state: "Vérifié",
+      note: "Contrôle complémentaire de l’intégrité système.",
+    },
+    {
+      name: "ClamAV",
+      state: "Scan",
+      note: "Détection de malwares et de fichiers suspects.",
+    },
+    {
+      name: "YARA",
+      state: "Analyse",
+      note: "Détection avancée par règles sur les artefacts suspects.",
+    },
+  ],
+  evidence: [
+    "Amélioration du score Lynis après hardening.",
+    "Nmap a permis d’identifier les ports ouverts et les services exposés.",
+    "Nikto a servi à contrôler les faiblesses et expositions du service web.",
+    "Chkrootkit et Rkhunter ont vérifié l’absence d’indices de rootkits.",
+    "ClamAV a apporté une détection antivirus complémentaire.",
+    "YARA complète la détection avec des règles ciblées sur les menaces.",
+  ],
+  continuousMonitoring: [
+    {
+      name: "Auditd",
+      role: "Journalisation",
+      description: "Trace les actions sensibles et les événements de sécurité sur la VM.",
+      outcome: "Meilleure traçabilité système",
+      icon: FileSearch,
+    },
+    {
+      name: "Fail2Ban",
+      role: "Protection active",
+      description: "Détecte les tentatives répétées et bannit automatiquement les IP suspectes.",
+      outcome: "Réduction du risque de brute force",
+      icon: Ban,
+    },
+    {
+      name: "rsyslog",
+      role: "Centralisation",
+      description: "Agrège et redirige les journaux pour faciliter l’analyse continue.",
+      outcome: "Logs mieux structurés et exploitables",
+      icon: Activity,
+    },
+    {
+      name: "Wazuh",
+      role: "SIEM",
+      description: "Supervision centralisée, corrélation et remontée d’alertes de sécurité si installé.",
+      outcome: "Détection plus rapide des incidents",
+      icon: Server,
+    },
+  ],
+  monitoringGoals: [
+    "Détecter rapidement les comportements suspects ou tentatives d’intrusion.",
+    "Assurer une meilleure traçabilité des événements de sécurité.",
+    "Centraliser l’observation continue après les corrections appliquées.",
+  ],
+  vulnerabilities: [
+    {
+      name: "SSH",
+      severity: "Critique",
+      before: "Configuration permissive",
+      after: "SSH durci",
+    },
+    {
+      name: "UFW",
+      severity: "Haute",
+      before: "Configuration insuffisante",
+      after: "Pare-feu actif",
+    },
+    {
+      name: "Fail2Ban",
+      severity: "Haute",
+      before: "Absent",
+      after: "Installé et actif",
+    },
+    {
+      name: "Apache",
+      severity: "Moyenne",
+      before: "Informations exposées",
+      after: "Configuration renforcée",
+    },
+  ],
+  live: {
+    serverIp: "192.168.56.101",
+    sshPort: "2222",
+    attackStatus: "Backend non connecté",
+>>>>>>> 349b834 (new update)
     failedAttempts: 0,
     bannedIps: [],
     lastEvent: "Aucun audit lance",
@@ -43,6 +336,7 @@ const fallbackData = {
   },
 };
 
+<<<<<<< HEAD
 const iconMap = {
   Lynis: Shield,
   Nmap: Radar,
@@ -58,6 +352,42 @@ const iconMap = {
 };
 
 function SeverityBadge({ level = "Moyenne" }) {
+=======
+function withKnownIcons(items = []) {
+  return items.map((item) => ({
+    ...item,
+    icon: item.icon || iconByName[item.name] || Shield,
+  }));
+}
+
+function normalizeAuditData(payload) {
+  const next = payload?.data || payload || {};
+
+  return {
+    ...next,
+    tools: withKnownIcons(next.tools || initialData.tools),
+    hardeningActions: withKnownIcons(
+      next.hardeningActions || initialData.hardeningActions,
+    ),
+    continuousMonitoring: withKnownIcons(
+      next.continuousMonitoring || initialData.continuousMonitoring,
+    ),
+    hardeningSteps: next.hardeningSteps || initialData.hardeningSteps,
+    hardeningGoals: next.hardeningGoals || initialData.hardeningGoals,
+    monitoringGoals: next.monitoringGoals || initialData.monitoringGoals,
+    live: {
+      ...initialData.live,
+      ...(next.live || {}),
+    },
+  };
+}
+
+function auditIsActive(payload, data) {
+  return Boolean(payload?.running) && data?.live?.attackStatus !== "Erreur";
+}
+
+function SeverityBadge({ level }) {
+>>>>>>> 349b834 (new update)
   const cls =
     level === "Critique"
       ? "severity critical"
@@ -103,6 +433,7 @@ function ToolCard({ tool }) {
 }
 
 export default function App() {
+<<<<<<< HEAD
   const [data, setData] = useState(fallbackData);
   const [running, setRunning] = useState(false);
   const [connection, setConnection] = useState("Hors ligne");
@@ -131,10 +462,37 @@ export default function App() {
     loadAudit();
 
     const socket = io(API_BASE, {
+=======
+  const [data, setData] = useState(initialData);
+  const [isRunning, setIsRunning] = useState(false);
+  const [backendError, setBackendError] = useState("");
+
+  useEffect(() => {
+    if (!canUseBackend) {
+      return undefined;
+    }
+
+    fetch(`${BACKEND_URL}/api/audit`)
+      .then((response) => response.json())
+      .then((payload) => {
+        const normalized = normalizeAuditData(payload);
+        setIsRunning(auditIsActive(payload, normalized));
+        setData((prev) => ({
+          ...prev,
+          ...normalized,
+        }));
+      })
+      .catch(() => {
+        setBackendError("Backend indisponible");
+      });
+
+    const socket = io(BACKEND_URL, {
+>>>>>>> 349b834 (new update)
       autoConnect: true,
       transports: ["websocket", "polling"],
     });
 
+<<<<<<< HEAD
     socket.on("connect", () => setConnection("Connecte"));
     socket.on("disconnect", () => setConnection("Hors ligne"));
     socket.on("connect_error", () => setConnection("Socket indisponible"));
@@ -148,6 +506,26 @@ export default function App() {
           lastEvent: event.message,
           events: [event, ...(prev.live.events || [])].slice(0, 20),
         },
+=======
+    socket.on("audit:update", (payload) => {
+      setBackendError(payload.error || "");
+      const normalized = normalizeAuditData(payload);
+      setIsRunning(auditIsActive(payload, normalized));
+      setData((prev) => ({
+        ...prev,
+        ...normalized,
+      }));
+    });
+
+    socket.on("dashboard-update", (payload) => {
+      const normalized = normalizeAuditData(payload);
+      if (normalized.live.attackStatus === "Erreur") {
+        setIsRunning(false);
+      }
+      setData((prev) => ({
+        ...prev,
+        ...normalized,
+>>>>>>> 349b834 (new update)
       }));
     });
     socket.on("dashboard-update", (payload) => {
@@ -159,6 +537,7 @@ export default function App() {
     return () => socket.disconnect();
   }, []);
 
+<<<<<<< HEAD
   async function runAudit() {
     setError("");
     setRunning(true);
@@ -172,6 +551,26 @@ export default function App() {
       setError(`Impossible de lancer l'audit: ${err.message}`);
     }
   }
+=======
+  const runAudit = async () => {
+    setBackendError("");
+    setIsRunning(true);
+
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/audit/run`, {
+        method: "POST",
+      });
+
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok && response.status !== 409) {
+        throw new Error(payload.message || "Impossible de lancer l'audit");
+      }
+    } catch (error) {
+      setBackendError(error.message);
+      setIsRunning(false);
+    }
+  };
+>>>>>>> 349b834 (new update)
 
   return (
     <div className="dashboard">
@@ -200,6 +599,18 @@ export default function App() {
               {scoreDelta >= 0 ? "+" : ""}
               {scoreDelta} <small>pts Lynis</small>
             </strong>
+          </div>
+          <div className="audit-control">
+            <button className="audit-button" onClick={runAudit} disabled={isRunning || !canUseBackend}>
+              {isRunning ? <RefreshCw size={18} /> : <Play size={18} />}
+              <span>{isRunning ? "Audit en cours" : "Run Audit"}</span>
+            </button>
+            <p>
+              {backendError ||
+                (canUseBackend
+                  ? `API: ${BACKEND_URL}`
+                  : "Live désactivé hors environnement local")}
+            </p>
           </div>
           <div className="hero-mini-grid">
             <div className="hero-mini-card">
